@@ -1,0 +1,5 @@
+name: TempFly
+version: '1.0-SNAPSHOT'
+main: xyz.alugor.tempfly.TempFlyPlugin
+api-version: '1.21'
+authors: [ Alugor ]
