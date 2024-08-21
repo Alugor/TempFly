@@ -19,6 +19,7 @@ public final class TempFlyPlugin extends JavaPlugin {
     @Override
     public void onEnable() {
         instance = this;
+        //credentials are only for local xampp database
         database = new Database("localhost", 3306, "tempfly", "tempfly", "lN6X!j]P*@D/81CU");
         service = new TempFlyService(database);
         createTable();
