@@ -60,6 +60,8 @@ public final class TempFlyPlugin extends JavaPlugin {
             Bukkit.getOnlinePlayers().stream()
                     //filtering out those who ain't flying
                     .filter(player -> !player.isFlying())
+                    //filtering out those who have permission to bypass time
+                    .filter(player -> !player.hasPermission("flytime.infinite"))
                     .forEach(player -> {
                 //checking if the player has a database entry
                 service.getTempFlyByUUID(player.getUniqueId()).ifPresent(tempFly -> {
