@@ -57,7 +57,10 @@ public final class TempFlyPlugin extends JavaPlugin {
     private void runThread() {
         Runnable task = () -> {
             //iterating every player
-            Bukkit.getOnlinePlayers().forEach(player -> {
+            Bukkit.getOnlinePlayers().stream()
+                    //filtering out those who ain't flying
+                    .filter(player -> !player.isFlying())
+                    .forEach(player -> {
                 //checking if the player has a database entry
                 service.getTempFlyByUUID(player.getUniqueId()).ifPresent(tempFly -> {
                     /*
