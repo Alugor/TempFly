@@ -14,17 +14,6 @@ import java.util.UUID;
 public class TempFlyService {
     private final Database database;
 
-    public List<TempFly> getAllTempFlies() {
-        try {
-            return database.executeQuery(
-                    "SELECT * FROM temp_fly",
-                    this::mapResultSetToTempFly
-            );
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     public void initializeTempFlyTable() {
         String createTableSQL = "CREATE TABLE IF NOT EXISTS temp_fly (" +
                 "uuid CHAR(36) PRIMARY KEY, " +
