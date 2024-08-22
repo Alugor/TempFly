@@ -13,7 +13,6 @@ import java.util.UUID;
 @ToString
 public class TempFly {
     private UUID uuid;
-    private String name;
     private Long duration;
     private Boolean status;
 }
