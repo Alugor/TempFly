@@ -70,6 +70,16 @@ public final class TempFlyPlugin extends JavaPlugin {
                     ensure with Math.max(); that duration never goes negative
                      */
                     tempFly.setDuration(Math.max(0, tempFly.getDuration() - 1));
+                    //disabling fly-time if it goes to 0 duration.
+                    if (tempFly.getDuration() == 0) {
+                        /*
+                        not toggling the fly mode because the player would fall to the ground.
+                        player.setFlying(false);
+                         */
+                        //disabling allow-flight so that the next time the player will land on ground -> he can not toggle flight anymore.
+                        player.setAllowFlight(false);
+                        tempFly.setStatus(false);
+                    }
                     //saving object to the database
                     service.saveTempFly(tempFly);
                 });
