@@ -17,6 +17,7 @@ public class PlayerJoinListener implements Listener {
         Player player = event.getPlayer();
         TempFlyService service = TempFlyPlugin.getService();
 
+        //checking if the player has a database entry
         service.getTempFlyByUUID(player.getUniqueId()).ifPresent(tempFly -> {
             if (tempFly.getStatus()) {
                 player.setAllowFlight(true);

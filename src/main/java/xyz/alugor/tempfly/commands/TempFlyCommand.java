@@ -58,19 +58,24 @@ public class TempFlyCommand implements CommandExecutor {
             }
             UUID uuid = player.getUniqueId();
 
+            //converting String into TimeUnit
             TimeUnit timeUnit = convertToTimeUnit(args[3]);
+            //if the sender entered a wrong format
             if (timeUnit == null) {
                 sender.sendMessage("Du hast eine ungültige Zeitform angegeben.");
                 return false;
             }
 
             try {
+                //converting String into Long and refactoring it with the desired TimeUnit into seconds
                 long time = convertTime(Math.abs(Long.parseLong(args[2])), timeUnit);
                 TempFlyService service = TempFlyPlugin.getService();
 
                 switch (sub.toLowerCase()) {
                     case "set":
+                        //in case the player doesn't have a database entry
                         service.createIfNotExists(uuid);
+                        //checking if the player has a database entry
                         service.getTempFlyByUUID(uuid).ifPresent(tempFly -> {
                             tempFly.setDuration(time);
                             service.saveTempFly(tempFly);
@@ -78,7 +83,9 @@ public class TempFlyCommand implements CommandExecutor {
                         });
                         break;
                     case "add":
+                        //in case the player doesn't have a database entry
                         service.createIfNotExists(uuid);
+                        //checking if the player has a database entry
                         service.getTempFlyByUUID(uuid).ifPresent(tempFly -> {
                             tempFly.setDuration(tempFly.getDuration() + time);
                             service.saveTempFly(tempFly);
@@ -86,7 +93,9 @@ public class TempFlyCommand implements CommandExecutor {
                         });
                         break;
                     case "remove":
+                        //in case the player doesn't have a database entry
                         service.createIfNotExists(uuid);
+                        //checking if the player has a database entry
                         service.getTempFlyByUUID(uuid).ifPresent(tempFly -> {
                             tempFly.setDuration(Math.abs(tempFly.getDuration() - time));
                             service.saveTempFly(tempFly);
@@ -116,12 +125,15 @@ public class TempFlyCommand implements CommandExecutor {
     private void handleFlight(CommandSender sender, UUID uuid, Player player) {
         TempFlyService service = TempFlyPlugin.getService();
 
+        //in case the player doesn't have a database entry
         service.createIfNotExists(uuid);
+        //checking if the player has a database entry
         service.getTempFlyByUUID(uuid).ifPresentOrElse(tempFly -> {
             if (tempFly.getStatus()) {
                 disableFlight(player, tempFly);
                 service.saveTempFly(tempFly);
 
+                //in case sender is console and not the player itself
                 if (!sender.getName().equals(player.getName())) {
                     sender.sendMessage(String.format("Fly-Time für %s wurde deaktiviert", player.getName()));
                 }
@@ -130,10 +142,12 @@ public class TempFlyCommand implements CommandExecutor {
                     enableFlight(player, tempFly);
                     service.saveTempFly(tempFly);
 
+                    //in case sender is console and not the player itself
                     if (!sender.getName().equals(player.getName())) {
                         sender.sendMessage(String.format("Fly-Time für %s wurde aktiviert", player.getName()));
                     }
                 } else {
+                    //in case sender is console and not the player itself
                     if (sender.getName().equals(player.getName())) {
                         sender.sendMessage("Du hast nicht genügend Fly-Time.");
                     } else {
@@ -141,6 +155,7 @@ public class TempFlyCommand implements CommandExecutor {
                     }
                 }
             }
+            //no entry found in database
         }, () -> sender.sendMessage("Es konnte kein Eintrag in der Datenbank gefunden werden."));
     }
 

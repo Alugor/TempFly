@@ -40,22 +40,33 @@ public final class TempFlyPlugin extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        //stopping the scheduler
         executor.shutdownNow();
+        //properly closing the database connection
         database.close();
     }
 
     private void initEvents() {
+        //register commands
         new TempFlyCommand(this);
 
+        //register events
         new PlayerJoinListener(this);
     }
 
     private void runThread() {
         Runnable task = () -> {
+            //iterating every player
             Bukkit.getOnlinePlayers().forEach(player -> {
+                //checking if the player has a database entry
                 service.getTempFlyByUUID(player.getUniqueId()).ifPresent(tempFly -> {
-                   tempFly.setDuration(Math.abs(tempFly.getDuration() - 1));
-                   service.saveTempFly(tempFly);
+                    /*
+                    removing 1 second of the duration
+                    ensure with Math.abs(); that duration never goes negative
+                     */
+                    tempFly.setDuration(Math.abs(tempFly.getDuration() - 1));
+                    //saving object to the database
+                    service.saveTempFly(tempFly);
                 });
             });
         };
@@ -67,6 +78,7 @@ public final class TempFlyPlugin extends JavaPlugin {
     }
 
     private void insertTestData() {
+        //adding temporary test data
         TempFly tempFly = new TempFly(UUID.randomUUID(), 3600L, true);
         service.saveTempFly(tempFly);
     }
