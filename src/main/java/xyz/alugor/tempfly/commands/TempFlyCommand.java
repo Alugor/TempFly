@@ -5,24 +5,31 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import xyz.alugor.tempfly.TempFlyPlugin;
 import xyz.alugor.tempfly.database.entity.TempFly;
 import xyz.alugor.tempfly.database.service.TempFlyService;
 
 import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-public class TempFlyCommand implements CommandExecutor {
+public class TempFlyCommand implements CommandExecutor, TabCompleter {
+    private final String[] aliases = {"tempfly", "tfly", "fly", "tf"};
+    private final String[] subs = {"set", "add", "remove"};
+
     public TempFlyCommand(TempFlyPlugin plugin) {
         Objects.requireNonNull(plugin.getCommand("tempfly")).setExecutor(this);
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (args.length == 0 && sender instanceof Player player) {
             UUID uuid = player.getUniqueId();
 
@@ -108,6 +115,16 @@ public class TempFlyCommand implements CommandExecutor {
             }
         }
         return true;
+    }
+
+    @Override
+    public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+        if (Arrays.stream(aliases).anyMatch(s -> s.equalsIgnoreCase(command.getName()))) {
+            if (args.length == 1) {
+                return Arrays.asList(subs);
+            }
+        }
+        return List.of();
     }
 
     private long convertTime(long time, TimeUnit unit) {
