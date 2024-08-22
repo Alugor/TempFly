@@ -65,9 +65,9 @@ public final class TempFlyPlugin extends JavaPlugin {
                 service.getTempFlyByUUID(player.getUniqueId()).ifPresent(tempFly -> {
                     /*
                     removing 1 second of the duration
-                    ensure with Math.abs(); that duration never goes negative
+                    ensure with Math.max(); that duration never goes negative
                      */
-                    tempFly.setDuration(Math.abs(tempFly.getDuration() - 1));
+                    tempFly.setDuration(Math.max(0, tempFly.getDuration() - 1));
                     //saving object to the database
                     service.saveTempFly(tempFly);
                 });

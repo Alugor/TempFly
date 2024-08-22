@@ -68,7 +68,7 @@ public class TempFlyCommand implements CommandExecutor {
 
             try {
                 //converting String into Long and refactoring it with the desired TimeUnit into seconds
-                long time = convertTime(Math.abs(Long.parseLong(args[2])), timeUnit);
+                long time = convertTime(Math.max(0, Long.parseLong(args[2])), timeUnit);
                 TempFlyService service = TempFlyPlugin.getService();
 
                 switch (sub.toLowerCase()) {
@@ -97,7 +97,7 @@ public class TempFlyCommand implements CommandExecutor {
                         service.createIfNotExists(uuid);
                         //checking if the player has a database entry
                         service.getTempFlyByUUID(uuid).ifPresent(tempFly -> {
-                            tempFly.setDuration(Math.abs(tempFly.getDuration() - time));
+                            tempFly.setDuration(Math.max(0, tempFly.getDuration() - time));
                             service.saveTempFly(tempFly);
                             sender.sendMessage(String.format("Die Fly-Time Dauer wurde für %s verändert.", player.getName()));
                         });
@@ -111,7 +111,7 @@ public class TempFlyCommand implements CommandExecutor {
     }
 
     private long convertTime(long time, TimeUnit unit) {
-        return unit.toSeconds(Math.abs(time));
+        return unit.toSeconds(Math.max(0, time));
     }
 
     private TimeUnit convertToTimeUnit(String timeUnit) {
